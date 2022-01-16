@@ -55,6 +55,7 @@
             this.button9 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -77,6 +78,7 @@
             this.picDisplay.TabIndex = 0;
             this.picDisplay.TabStop = false;
             this.picDisplay.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.picDisplay.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picDisplay_MouseClick);
             this.picDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picDisplay_MouseMove);
             // 
             // timer1
@@ -105,6 +107,7 @@
             this.trackBar2.Size = new System.Drawing.Size(45, 104);
             this.trackBar2.TabIndex = 2;
             this.trackBar2.Value = 50;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
             // trackBar3
             // 
@@ -115,6 +118,7 @@
             this.trackBar3.Size = new System.Drawing.Size(45, 104);
             this.trackBar3.TabIndex = 3;
             this.trackBar3.Value = 50;
+            this.trackBar3.Scroll += new System.EventHandler(this.trackBar3_Scroll);
             // 
             // trackBar4
             // 
@@ -135,6 +139,7 @@
             this.trackBar5.Size = new System.Drawing.Size(45, 104);
             this.trackBar5.TabIndex = 5;
             this.trackBar5.Value = 50;
+            this.trackBar5.Scroll += new System.EventHandler(this.trackBar5_Scroll);
             // 
             // trackBar6
             // 
@@ -145,6 +150,7 @@
             this.trackBar6.Size = new System.Drawing.Size(45, 104);
             this.trackBar6.TabIndex = 6;
             this.trackBar6.Value = 50;
+            this.trackBar6.Scroll += new System.EventHandler(this.trackBar6_Scroll);
             // 
             // trackBar7
             // 
@@ -155,6 +161,7 @@
             this.trackBar7.Size = new System.Drawing.Size(45, 104);
             this.trackBar7.TabIndex = 7;
             this.trackBar7.Value = 50;
+            this.trackBar7.Scroll += new System.EventHandler(this.trackBar7_Scroll);
             // 
             // trackBar8
             // 
@@ -165,6 +172,7 @@
             this.trackBar8.Size = new System.Drawing.Size(45, 104);
             this.trackBar8.TabIndex = 8;
             this.trackBar8.Value = 50;
+            this.trackBar8.Scroll += new System.EventHandler(this.trackBar8_Scroll);
             // 
             // trackBar9
             // 
@@ -175,6 +183,7 @@
             this.trackBar9.Size = new System.Drawing.Size(154, 45);
             this.trackBar9.TabIndex = 9;
             this.trackBar9.Value = 30;
+            this.trackBar9.Scroll += new System.EventHandler(this.trackBar9_Scroll);
             // 
             // trackBar10
             // 
@@ -185,6 +194,7 @@
             this.trackBar10.Size = new System.Drawing.Size(208, 45);
             this.trackBar10.TabIndex = 10;
             this.trackBar10.Value = 1;
+            this.trackBar10.Scroll += new System.EventHandler(this.trackBar10_Scroll);
             // 
             // label1
             // 
@@ -213,6 +223,7 @@
             this.trackBar11.Size = new System.Drawing.Size(45, 104);
             this.trackBar11.TabIndex = 13;
             this.trackBar11.Value = 50;
+            this.trackBar11.Scroll += new System.EventHandler(this.trackBar11_Scroll);
             // 
             // button1
             // 
@@ -222,6 +233,7 @@
             this.button1.TabIndex = 14;
             this.button1.Text = "Цвет";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -231,6 +243,7 @@
             this.button2.TabIndex = 15;
             this.button2.Text = "Цвет";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -240,6 +253,7 @@
             this.button3.TabIndex = 16;
             this.button3.Text = "Цвет";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -249,6 +263,7 @@
             this.button4.TabIndex = 17;
             this.button4.Text = "Цвет";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
@@ -258,6 +273,7 @@
             this.button5.TabIndex = 18;
             this.button5.Text = "Цвет";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
@@ -267,6 +283,7 @@
             this.button6.TabIndex = 19;
             this.button6.Text = "Цвет";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
@@ -276,6 +293,7 @@
             this.button7.TabIndex = 20;
             this.button7.Text = "Цвет";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button8
             // 
@@ -285,6 +303,7 @@
             this.button8.TabIndex = 21;
             this.button8.Text = "Цвет";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button9
             // 
@@ -294,6 +313,7 @@
             this.button9.TabIndex = 22;
             this.button9.Text = "Цвет";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // label3
             // 
@@ -345,6 +365,7 @@
             this.Controls.Add(this.picDisplay);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
@@ -390,6 +411,7 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }
 
