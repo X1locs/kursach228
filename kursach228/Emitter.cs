@@ -1,39 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static kursach228.Particle;
 
 namespace kursach228
 {
-    class Emitter
+    public class Emitter
     {
-        public int ParticlesCount = 500;
-        public List<IImpactPoint> impactPoints = new List<IImpactPoint>();// тут буду хранится точки притяжения
         public float GravitationX = 0;
-        public float GravitationY = 1; // отключил
+        public float GravitationY = 0;
 
-        List<Particle> particles = new List<Particle>();
+        public List<Particle> particles = new List<Particle>();
+
         public int MousePositionX;
         public int MousePositionY;
 
-        public int X; // координата X центра эмиттера, будем ее использовать вместо MousePositionX
-        public int Y; // соответствующая координата Y 
-        public int Direction = 0; // вектор направления в градусах куда сыпет эмиттер
-        public int Spreading = 360; // разброс частиц относительно Direction
-        public int SpeedMin = 1; // начальная минимальная скорость движения частицы
-        public int SpeedMax = 10; // начальная максимальная скорость движения частицы
-        public int RadiusMin = 2; // минимальный радиус частицы
-        public int RadiusMax = 10; // максимальный радиус частицы
-        public int LifeMin = 20; // минимальное время жизни частицы
-        public int LifeMax = 100; // максимальное время жизни частицы
+        public int ParticlesPerTick = 10;
 
-        public int ParticlesPerTick = 1; // добавил новое поле
+        public int Speedmin = 1;    // Минимальная скорость падения частиц
+        public int SpeedMax = 10;    // Максимальная скорость падения частиц
 
         public Color ColorFrom = Color.White; // начальный цвет частицы
         public Color ColorTo = Color.FromArgb(0, Color.Black); // конечный цвет частиц
+
+        public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
+
+        public int ParticlesCount = 100;  // Количество частиц
+        public virtual void ResetParticle(Particle particle)
+        {
+            particle.Life = 70 + Particle.rand.Next(100);
+            particle.X = MousePositionX;
+            particle.Y = MousePositionY;
+
+            var direction = (double)Particle.rand.Next(360);
+            var speed = Speedmin + Particle.rand.Next(10);
+
+            particle.SpeedX = (float)(Math.Cos(direction / 180 * Math.PI) * speed);
+            particle.SpeedY = -(float)(Math.Sin(direction / 180 * Math.PI) * speed);
+
+            particle.Radius = 2 + Particle.rand.Next(10);
+
+            if (particle.Life > 0)
+            {
+                var color = particle as ParticleColorful;
+                color.FromColor = Color.White;
+                color.ToColor = Color.White;
+            }
+        }
 
         public virtual Particle CreateParticle()
         {
@@ -43,64 +55,40 @@ namespace kursach228
 
             return particle;
         }
-
-        public virtual void ResetParticle(Particle particle)
-        {
-            particle.Life = Particle.rand.Next(LifeMin, LifeMax);
-
-            particle.X = X;
-            particle.Y = Y;
-
-            var direction = Direction
-                + (double)Particle.rand.Next(Spreading)
-                - Spreading / 2;
-
-            var speed = Particle.rand.Next(SpeedMin, SpeedMax);
-
-            particle.SpeedX = (float)(Math.Cos(direction / 180 * Math.PI) * speed);
-            particle.SpeedY = -(float)(Math.Sin(direction / 180 * Math.PI) * speed);
-
-            particle.Radius = Particle.rand.Next(RadiusMin, RadiusMax);
-        }
-
-
         public void UpdateState()
         {
-
-            int particlesToCreate = ParticlesPerTick; // фиксируем счетчик сколько частиц нам создавать за тик
+            // изменение состояния частиц
+            int particlesToCreate = ParticlesPerTick;
 
             foreach (var particle in particles)
             {
-                if (particle.Life <= 0) // если частицы умерла
+                particle.Life -= 1;
+                if (particle.Life < 0)
                 {
-                     
-                     // то проверяем надо ли создать частицу
-                     
                     if (particlesToCreate > 0)
                     {
-                        //* у нас как сброс частицы равносилен созданию частицы 
+                        /* у нас как сброс частицы равносилен созданию частицы */
                         particlesToCreate -= 1; // поэтому уменьшаем счётчик созданных частиц на 1
                         ResetParticle(particle);
                     }
-                
                 }
                 else
                 {
-                    //*теперь двигаю вначале 
+                    // двигаем частицу
                     particle.X += particle.SpeedX;
                     particle.Y += particle.SpeedY;
 
-                    particle.Life -= 1;
+                    // перебираем все точки и пересчитываем их влияние на частицы
                     foreach (var point in impactPoints)
                     {
                         point.ImpactParticle(particle);
                     }
 
+                    // изменяем скорость частиц под действием гравитации
                     particle.SpeedX += GravitationX;
-                    particle.SpeedY += GravitationY; 
+                    particle.SpeedY += GravitationY;
                 }
             }
-
 
             while (particlesToCreate >= 1)
             {
@@ -109,78 +97,38 @@ namespace kursach228
                 ResetParticle(particle);
                 particles.Add(particle);
             }
-            // добавил генерацию частиц
-            // генерирую не более 10 штук за тик
-            for (var i = 0; i < 10; ++i)
-            {
-                if (particles.Count < ParticlesCount) // пока частиц меньше 500 генерируем новые
-                {
-                    var particle = CreateParticle(); // и собственно теперь тут его вызываем
-
-                    ResetParticle(particle); // добавили вызов ResetParticle
-
-                    particles.Add(particle);
-                }
-                else
-                {
-                    break; // а если частиц уже 500 штук, то ничего не генерирую
-                }
-            }
         }
-
         public void Render(Graphics g)
         {
-            // ну тут так и быть уж сам впишу...
-            // это то же самое что на форме в методе Render
             foreach (var particle in particles)
             {
-                particle.Draw(g);
+                if (particle.Life > 0)
+                {
+                    particle.Draw(g);
+                }
             }
 
-            // рисую точки притяжения красными кружочками
             foreach (var point in impactPoints)
             {
                 point.Render(g);
             }
         }
+    }
 
-        public abstract class IImpactPoint
+    public class TopEmitter : Emitter
+    {
+        public int Width;
+
+        public override void ResetParticle(Particle particle)
         {
-            public float X; // ну точка же, вот и две координаты
-            public float Y;
+            base.ResetParticle(particle);
 
-            // абстрактный метод с помощью которого будем изменять состояние частиц
-            // например притягивать
-            public abstract void ImpactParticle(Particle particle);
+            particle.X = Particle.rand.Next(Width);
+            particle.Y = 0;
 
-            // базовый класс для отрисовки точечки
-            public virtual void Render(Graphics g)
-            {
-                g.FillEllipse(
-                        new SolidBrush(Color.Red),
-                        X - 5,
-                        Y - 5,
-                        10,
-                        10
-                    );
-            }
-        }
-        
-        public class TopEmitter : Emitter
-        {
-            public int Width; // длина экрана
+            particle.SpeedY = Speedmin;
 
-            public override void ResetParticle(Particle particle)
-            {
-                base.ResetParticle(particle); // вызываем базовый сброс частицы, там жизнь переопределяется и все такое
-
-                // а теперь тут уже подкручиваем параметры движения
-                particle.X = Particle.rand.Next(Width); // позиция X -- произвольная точка от 0 до Width
-                particle.Y = 0;  // ноль -- это верх экрана 
-
-                particle.SpeedY = 1; // падаем вниз по умолчанию
-                particle.SpeedX = Particle.rand.Next(-2, 2); // разброс влево и вправа у частиц 
-            }
+            particle.SpeedX = Particle.rand.Next(-2, 2);
         }
     }
 }
